@@ -5,6 +5,7 @@
 > 使用规则：
 > - 每轮审查开始前先读取本文件，复用已有 issue_id 和 rejected/deferred 状态。
 > - 每轮修复结束后更新本文件。
+> - 每轮技术闭环结束后更新产品评审状态，避免下一轮丢失“是否已评分/是否被用户跳过”。
 > - 候选规则只能记录在这里，不能立即污染 checklist。
 
 ---
@@ -41,7 +42,26 @@ excluded_dimensions: []
 max_findings: 8
 severity_threshold: P1
 checklist_version:
+product_review_gate:
+product_review_status:
+product_review_trigger:
 ```
+
+---
+
+## 本轮产品评审状态
+
+| review_id | 状态 | 触发时机 | 最近提示语 | 结果摘要 |
+|-----------|------|----------|------------|----------|
+| 当前轮次 | pending_after_tech_review / pending_after_fix / completed / skipped_by_user / not_requested_in_this_round | tech_review / fix_verification / - | "技术审查完成，要继续做产品评审吗？" / "修复验证完成，要继续做产品评审吗？" / - | 暂无 |
+
+### 状态说明
+
+- `pending_after_tech_review`：技术审查已完成，等待询问或执行产品评审
+- `pending_after_fix`：修复验证已完成，等待询问或执行产品评审
+- `completed`：本轮已完成多维度评分和产品评审输出
+- `skipped_by_user`：用户明确表示本轮不做产品评审
+- `not_requested_in_this_round`：本轮是纯修复或其他流程，不要求进入产品评审
 
 ---
 
@@ -82,4 +102,3 @@ checklist_version:
 - **成功项目**:
 - **失败项目**:
 - **失败原因**:
-

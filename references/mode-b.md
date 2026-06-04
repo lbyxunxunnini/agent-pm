@@ -39,6 +39,8 @@ digraph mode_b {
     verify [label="B-Step 5: 修复验证\n- diff 驱动\n- 验收条件检查\n- 回归检查"];
     all_fixed [shape=diamond label="全部 P0/P1 fixed?"];
     ledger [label="B-Step 6: 台账更新\n- 记录 issue 最终状态\n- 提炼候选规则"];
+    product [shape=diamond label="继续产品评审?"];
+    handoff [label="B-Step 7: 交接产品评审\n- 询问是否进入多维度评分\n- 沿用本轮审查上下文"];
     end [shape=doublecircle label="本轮结束"];
 
     start -> dep;
@@ -55,7 +57,10 @@ digraph mode_b {
     verify -> all_fixed;
     all_fixed -> ledger [label="是"];
     all_fixed -> fix [label="否，继续修"];
-    ledger -> end;
+    ledger -> product;
+    product -> handoff [label="是"];
+    product -> end [label="否"];
+    handoff -> end;
 }
 ```
 
@@ -162,7 +167,7 @@ digraph mode_b {
 - 输出验证报告（模板见 [report-templates.md](report-templates.md) 的"修复验证报告"模板）
 
 **5c. 停止条件**
-- 若所有 `accepted` 的 P0/P1 都为 `fixed`，且无本次 diff 直接引入的 P0/P1 回归：本轮结束
+- 若所有 `accepted` 的 P0/P1 都为 `fixed`，且无本次 diff 直接引入的 P0/P1 回归：进入 B-Step 6 收尾，并按需要交接到产品评审
 - 若存在 `partially_fixed` 或 `failed` 的 P0/P1：只针对这些 issue 继续修复，不得重新开放完整审查
 - 若用户要求处理 backlog：开启新一轮审查或新一轮修复，不混入当前闭环
 
@@ -178,3 +183,13 @@ digraph mode_b {
 - 若修复过程中发现新的通用模式 → 只记录为候选规则，不得直接写入正式 checklist
 - 若使用了 checklist 中的修复模板 → 标记该模板在本项目中验证通过
 - 候选规则不得在当前审查闭环内生效，只能在用户确认后的下一轮审查中启用
+
+## B-Step 7: 产品评审交接
+
+当本轮修复源自模式 A 的技术审查闭环时，B-Step 6 完成后不得直接结束，必须显式询问用户：
+
+`修复验证完成，要继续做产品评审吗？`
+
+- 用户确认：进入 [report-templates.md](report-templates.md) 的"产品评审"模板，继续输出多维度评分、发展方向和用户接受策略
+- 用户拒绝：输出"修复验证完成，如需产品评审随时说"，然后结束
+- 若本轮是用户单独发起的纯修复请求（不是从模式 A 进入），可跳过此步，直接结束

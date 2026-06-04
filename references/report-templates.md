@@ -12,6 +12,7 @@
 - excluded_dimensions: [...]
 - max_findings: 8
 - severity_threshold: P1
+- product_review_gate: pending_after_tech_review / pending_after_fix / not_requested_in_this_round / completed / skipped_by_user
 
 ### [维度名]
 - `APM-WORKFLOW-001` **[P1 必须改]** status: open
@@ -47,6 +48,7 @@
 ### ReviewSpec
 - mode: verification
 - inherited_from: 本轮 discovery ReviewSpec
+- product_review_gate: pending_after_fix / completed / skipped_by_user
 
 ### 修复结果
 - APM-WORKFLOW-001 [P1] —— fixed
@@ -60,9 +62,23 @@
 
 ### Backlog
 - [仅记录 unrelated P2/P3，不阻塞]
+
+### 产品评审交接
+- status: pending_after_fix / completed / skipped_by_user
+- next_prompt: "修复验证完成，要继续做产品评审吗？" / "无"
 ```
 
 ## 产品评审
+
+```
+## 产品评审
+
+- status: completed
+- triggered_after: tech_review / fix_verification
+
+### 价值评定
+...
+```
 
 ### 价值评定
 
@@ -95,6 +111,7 @@
 - 审查日期：YYYY-MM-DD
 - 项目路径：/path/to/project
 - 项目类型：skill / CLAUDE.md / MCP server
+- 产品评审状态：pending_after_tech_review / pending_after_fix / completed / skipped_by_user / not_requested_in_this_round
 
 ## 技术审查
 （按维度组织，同对话报告格式，包含 ReviewSpec、issue_id、severity、status、acceptance_criteria）
@@ -107,7 +124,10 @@
 - Backlog：[deferred issue 列表]
 
 ## 产品评审（如有，未执行则标注"未执行"）
-（同对话报告格式）
+- 状态：[completed / skipped_by_user / not_requested_in_this_round]
+- 触发时机：[tech_review / fix_verification / -]
+- 若未执行，记录原因：[用户跳过 / 本轮未进入该阶段（not_requested_in_this_round） / -]
+- 若已执行，（同对话报告格式）
 
 ## 自定义规则更新（如有）
 - 新增候选规则：CRXXX - 规则描述（来源：项目名，日期）
