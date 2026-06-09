@@ -29,7 +29,7 @@ digraph mode_a {
     node [shape=box];
 
     start [label="收到审查请求" shape=doublecircle];
-    read_ctx [label="Step 1: 读取项目上下文\n- 校验路径\n- 识别项目类型\n- 读 README/入口文件\n- 检查 issue-ledger"];
+    read_ctx [label="Step 1: 读取项目上下文\n- 校验路径\n- 识别项目类型\n- 读 README/入口文件\n- 检查 issue-ledger\n- 检查 archive 自诊断文档"];
     understand [label="Step 1.2: 充分理解项目\n- 通读所有相关文件\n- 梳理核心逻辑流程\n- 理解文件间关系"];
     summary_check [label="能输出理解摘要?" shape=diamond];
     fix_spec [label="Step 1.5: 固定 ReviewSpec\n- project_type\n- enabled_dimensions\n- max_findings\n- severity_threshold\n- mode: discovery"];
@@ -37,6 +37,7 @@ digraph mode_a {
     exec_verify [label="Step 2.5: 执行验证\n每个候选问题过 5 步"];
     pass [shape=diamond label="通过验证?"];
     discard [label="丢弃该问题" shape=box];
+    synthesis [label="Step 2.8: 跨维度综合发现\n- 共同根因?\n- 修复级联效应?\n- 与自诊断文档一致性?"];
     report [label="Step 3: 输出诊断报告\n- 按维度组织\n- 含 issue_id/severity/evidence/验收条件"];
     confirm [label="Step 4: 交互确认\n- 逐个确认\n- accepted/rejected/deferred"];
     product [label="产品评审?" shape=diamond];
@@ -50,9 +51,10 @@ digraph mode_a {
     fix_spec -> scan;
     scan -> exec_verify;
     exec_verify -> pass;
-    pass -> report [label="通过"];
+    pass -> synthesis [label="通过（全部维度扫描完成）"];
     pass -> discard [label="未通过"];
     discard -> scan [label="下一个候选"];
+    synthesis -> report;
     report -> confirm;
     confirm -> product;
     product -> end [label="不做"];
@@ -68,6 +70,7 @@ digraph mode_a {
 - 识别项目类型（按优先级）：存在 SKILL.md → 按 skill 审查；存在 MCP server 配置（如 mcp.json、server.ts）→ 按 MCP server 审查；存在 CLAUDE.md → 按 CLAUDE.md 审查；都没有 → 追问用户确认项目类型。同时存在多种类型文件时，以主要指令文件为准，其他文件作为上下文参考
 - 读取目标目录下的 README、入口文件、主配置文件
 - 若存在 [issue-ledger.md](issue-ledger.md)，先读取历史 issue 状态；已 `fixed` / `rejected` 的问题不得重复报告，`deferred` 问题只能进入 backlog
+- 检查项目的 `references/archive/` 目录（或类似的历史文档目录）是否存在自诊断文档、历史审查报告或改进分析文档。若有，先读取并纳入扫描上下文——审查目标从"从零发现问题"调整为"验证项目自诊断是否准确、改进方案是否已落地"。已知的未修复问题不需要重新发现，但需要验证其描述是否仍然准确
 - 理解"这个 agent 是干嘛的"——没有上下文的审查是脱离实际的
 - 有 README 则读取理解上下文；无 README 则从项目文件中自行推断用途，推断不了再追问用户
 - 若项目内容不足以进行有意义的审查（如只有配置文件、无实际指令/工具定义），告知用户并建议先补充内容
@@ -149,6 +152,18 @@ digraph mode_a {
 - 只看了引文所在段落没读完整上下文 → 必须通读相关文件的完整章节
 - 没有用具体输入模拟过执行路径 → 不得报告为 P0/P1
 
+### Step 2.8: 跨维度综合发现（写报告前的整体思考）
+
+在所有维度扫描完成、执行验证通过后，输出诊断报告之前，花一段文字回答以下三个问题。这不是产品评审的"目标治理综合分析"（那是阶段二的事），而是对技术审查发现的**整体校验**：
+
+1. **这些发现之间有没有共同根因？** 例如：维度 3 发现的 workflow bug 和维度 9 发现的过程控制/目标治理失衡，可能共享同一个根因——"规则覆盖了正向路径，但异常路径有缝隙"。如果找到了共同根因，在报告的每个相关 finding 中互相引用（如"APM-WORKFLOW-008 与 APM-GOV-005 共享根因，见产品评审综合分析"）
+
+2. **有没有一个发现修复后能让其他发现自然消失或降级？** 例如：修复了 APM-GOV-001（引入 Rubric），APM-GOV-005（过程控制/目标治理失衡）的严重程度可能从 P1 降为 P3，因为目标治理规则自然增加了
+
+3. **有没有与项目自诊断文档（Step 1 中读取的 archive 材料）不一致的地方？** 如果项目自诊断已经发现了某问题并提出了方案，但审查发现该方案存在缺陷或遗漏，必须在报告中显式标注
+
+输出格式：不进入报告正文，但作为报告的引言段或审查小结的一部分呈现，2-4 句话即可。
+
 ### Step 3: 输出诊断报告
 
 报告格式见 [report-templates.md](report-templates.md) 的"技术审查报告"模板。
@@ -171,5 +186,15 @@ digraph mode_a {
 
 - 用户确认后，执行以下步骤
 - 用户拒绝时输出"技术审查完成，如需产品评审随时说"或"修复验证完成，如需产品评审随时说"，自然结束
+
+**产品评审步骤**：
+
+1. **价值评定**：按 report-templates.md 的 5 个维度（痛度、技术质量、差异化、ROI、Loop 成熟度）评分
+2. **目标治理综合分析**（必出）：不是列问题清单，而是从整体上回答——
+   - 过程控制 vs 目标治理的张力在哪？统计两类规则的数量和比例
+   - 最有杠杆的改进方向是什么？补哪一项能让其他项自然改善？
+   - 改进项之间的依赖关系是什么？哪些必须同步实施？
+3. **发展方向**：输出短/中/长期路线图草案
+4. **用户接受策略**：定位 + 行动清单
 
 产品评审模板见 [report-templates.md](report-templates.md) 的"产品评审"模板。

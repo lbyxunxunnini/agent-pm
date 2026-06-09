@@ -1,14 +1,14 @@
 # 模式 C：新 Skill 创建澄清 [Flexible]
 
-追问顺序和深度可根据用户回答灵活调整，但 8 个闭环条件不可省略。
+追问顺序和深度可根据用户回答灵活调整，但 9 个闭环条件不可省略。
 
 ## Iron Law
 
 ```
-NO SKILL FILE WITHOUT ALL 8 CLOSURES COMPLETE
+NO SKILL FILE WITHOUT ALL 9 CLOSURES COMPLETE
 ```
 
-目标、边界、触发、流程、输出、资源和验收条件全部闭环前，不得生成 SKILL.md。
+目标、边界、触发、流程、输出、资源、验收条件和评估迭代全部闭环前，不得生成 SKILL.md。
 
 ## 流程图
 
@@ -21,7 +21,7 @@ digraph mode_c {
     brief [label="C-Step 1: 建立 SkillBrief\n- 生成 YAML 草案\n- 标注推断项"];
     ask [label="C-Step 2: 追问\n- 每轮最多 3 问\n- 优先问高风险缺口"];
     update [label="更新 SkillBrief"];
-    closure [label="C-Step 3: 闭环检查\n8 个维度全部满足?"];
+    closure [label="C-Step 3: 闭环检查\n9 个维度全部满足?"];
     gaps [label="输出未闭环点"];
     proposal [label="C-Step 4: 输出创建方案\n- SkillBrief\n- 推荐结构\n- 首版范围\n- 风险与验证"];
     user_confirm [shape=diamond label="用户确认?"];
@@ -63,6 +63,10 @@ skill_brief:
   tools_or_resources:
   edge_cases:
   acceptance_criteria:
+  evaluation:
+    method:           # rubric / checklist / binary / none
+    iteration_loop:   # true / false
+    exit_conditions:  # score_threshold / max_rounds / marginal_stall
   open_questions:
   closure_status: open
 ```
@@ -93,8 +97,15 @@ skill_brief:
 - **输出闭环**：清楚最终交付什么格式、什么质量标准
 - **资源闭环**：清楚是否需要 references、scripts、assets 或外部工具
 - **验收闭环**：清楚如何判断这个 skill 第一次版本已经可用
+- **评估与迭代闭环**：清楚如何评估 Agent 的产出质量（不仅是"对不对"还有"好不好"），有迭代改进循环和退出条件
 
 任一闭环不满足时，输出"当前未闭环点"，并继续追问。
+
+**评估与迭代闭环标准**：
+- 有量化评估方案（Rubric 条目、评分维度或检查清单），不是仅靠"跑通了就行"
+- 有迭代循环设计（评估不达标时如何回到执行阶段重做）
+- 有退出条件（评分阈值 / 最大轮次 / 边际效益判断）
+- 有执行者/评估者的信息隔离策略（如果适用）
 
 ## C-Step 4: 输出创建方案
 
