@@ -2,7 +2,7 @@
 
 `agent-pm` 是一个面向 Claude Code / Codex skill、`CLAUDE.md` 指令文件和 MCP Server 项目的产品经理型审查 skill。它不做通用 code review，而是从产品、指令、工作流和收敛性角度识别 agent 项目中的高价值问题，并支持在同一闭环内完成修复与验证。
 
-当前版本：`3.0.2`
+当前版本：`3.0.3`
 
 ## 核心能力
 

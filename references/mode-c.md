@@ -67,6 +67,7 @@ skill_brief:
     method:           # rubric / checklist / binary / none
     iteration_loop:   # true / false
     exit_conditions:  # score_threshold / max_rounds / marginal_stall
+    fit_reason:       # 为什么该评估强度适合当前 skill 类型
   open_questions:
   closure_status: open
 ```
@@ -97,15 +98,17 @@ skill_brief:
 - **输出闭环**：清楚最终交付什么格式、什么质量标准
 - **资源闭环**：清楚是否需要 references、scripts、assets 或外部工具
 - **验收闭环**：清楚如何判断这个 skill 第一次版本已经可用
-- **评估与迭代闭环**：清楚如何评估 Agent 的产出质量（不仅是"对不对"还有"好不好"），有迭代改进循环和退出条件
+- **评估与迭代闭环**：清楚如何评估 Agent 的产出质量（不仅是"对不对"还有"好不好"），并按 skill 类型定义合适的迭代改进循环和退出条件
 
 任一闭环不满足时，输出"当前未闭环点"，并继续追问。
 
 **评估与迭代闭环标准**：
-- 有量化评估方案（Rubric 条目、评分维度或检查清单），不是仅靠"跑通了就行"
-- 有迭代循环设计（评估不达标时如何回到执行阶段重做）
-- 有退出条件（评分阈值 / 最大轮次 / 边际效益判断）
-- 有执行者/评估者的信息隔离策略（如果适用）
+- 复杂/开发类 skill：必须有 Rubric 或分级检查清单，覆盖功能正确性、质量标准、失败红线和负向 Pitfall；必须有评估不达标时回到执行阶段的改进循环。
+- 轻量工具类 skill：允许使用 checklist 或 binary pass/fail，但必须说明为什么二元验收足够，并至少定义失败时的重试/回退/人工确认路径。
+- 纯咨询/分析类 skill：允许 checklist 作为主评估方式，但必须定义好输出和坏输出的判断标准，避免只写"回答得好"。
+- `evaluation.method: none` 只能用于无产出质量判断空间的极小封装型 skill；使用时必须在 `fit_reason` 中说明理由，否则视为未闭环。
+- 有退出条件（评分阈值 / 最大轮次 / 边际效益判断 / 人工确认），不能无限迭代。
+- 有执行者/评估者的信息隔离策略（如果适用）；不适用时必须说明原因。
 
 ## C-Step 4: 输出创建方案
 
