@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.6 - 2026-06-18
+
+- 模式 A 引入子 Agent 读取机制，将文件读取委托给独立子 Agent，避免主线程上下文膨胀导致死循环
+- 新增 ProjectContext 结构化定义，子 Agent 输出 files/workflow/decision_points/constraints/preliminary_findings，主线程后续阶段基于此工作不再回读原文件
+- 新增 preliminary_findings 预判机制，子 Agent 对措辞敏感检查项（无歧义表述、约束具体、触发条件、优先级）做预判，主线程只处理 warn 二次确认和 fail 纳入候选
+- Step 1.2 从"通读所有文件"改为"验证 ProjectContext 完整性"，只补充缺失部分，消除无边界循环
+- Step 2.5 验证阶段改为按需读取，限定范围（1-2 个文件 + 行号定位），禁止扇出
+- 新增降级策略：子 Agent 不可用时串行读取硬限制 8 个核心文件，读完立即生成 ProjectContext 后续不再回读
+
 ## 3.0.5 - 2026-06-10
 
 - 产品评审新增「三方评估法」：先扮演支持方列出优点、再扮演反方列出缺点、最后综合双方观点给出客观评级，确保评分公正而非凭印象打分
