@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.0.7 - 2026-06-18
+
+- 产品评审维度框架重构：从固定 5 维度改为三层可配置框架（核心维度 + 工具类型维度 + 场景维度）
+- 新增核心必评维度：逻辑闭环性、一致性、清晰度、具体性，解决原有框架缺少逻辑正确性检查的问题
+- 新增工具类型维度：Skill（指令清晰度、边界明确性、组合性、token 效率）、Agent（推理能力、规划能力、工具调用能力、错误恢复）、MCP Server（Tool schema 正确性、资源管理、安全性、性能）
+- 新增场景维度：Loop 成熟度、易用性、可组合性、安全性、痛度、差异化、ROI，按项目特点选择
+- 综合评级增加透明评分过程：必须输出维度评分明细表，每个维度评分必须引用支持方/反方具体条目编号
+- 反方观点约束：禁止"没有实战验证""用户是否会遵守"等模型不可验证的批评，聚焦逻辑正确性、可执行性、一致性、完整性、退出条件、资源消耗
+- 文件精简优化：核心文件从 1640 行减少到 855 行（-48%），详细内容移到 references/extended/ 目录按需加载
+- checklist.md 修复方法表格移到 extended/checklist-fix-methods.md
+- best-practices.md 精选 6 个核心模式，10 个扩展模式移到 extended/best-practices-extended.md
+- report-templates.md Rubric 评分标准移到 extended/rubric-scoring.md
+- mode-a.md 详细流程图和 ProjectContext 结构移到 extended/mode-a-details.md
+
 ## 3.0.6 - 2026-06-18
 
 - 模式 A 引入子 Agent 读取机制，将文件读取委托给独立子 Agent，避免主线程上下文膨胀导致死循环
