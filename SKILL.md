@@ -1,4 +1,10 @@
 ---
+slug: agent-pm-user-88546431
+displayName: Agent PM
+version: 3.0.9
+summary: AI Agent 产品经理型审查工具，从产品思维角度审查 agent 项目的设计质量
+tags: [agent, review, product-manager, claude-code]
+license: MIT
 name: agent-pm
 description: |-
   触发方式：/agent-pm [path]，不带路径时询问用户要审查哪个项目
