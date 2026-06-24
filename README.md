@@ -2,7 +2,7 @@
 
 `agent-pm` 是一个面向 Claude Code / Codex skill、`CLAUDE.md` 指令文件和 MCP Server 项目的产品经理型审查 skill。它不做通用 code review，而是从产品、指令、工作流和收敛性角度识别 agent 项目中的高价值问题，并支持在同一闭环内完成修复与验证。
 
-当前版本：`3.0.7`
+当前版本：`3.0.9`
 
 ## 核心能力
 
@@ -43,12 +43,18 @@ agent-pm/
 └── references/
     ├── best-practices.md
     ├── checklist.md
+    ├── faq.md
     ├── issue-ledger.md
     ├── mode-a.md
     ├── mode-b.md
     ├── mode-c.md
+    ├── quick-start.md
     ├── report-templates.md
     ├── skill-brief-questions.md
+    ├── examples/
+    │   ├── example-fix-flow.md
+    │   ├── example-product-review.md
+    │   └── example-review-output.md
     └── extended/ (按需加载)
         ├── best-practices-extended.md
         ├── checklist-fix-methods.md
@@ -66,6 +72,9 @@ agent-pm/
 - `references/issue-ledger.md`：issue 生命周期、ReviewSpec 和产品评审状态记录
 - `references/checklist.md`：逐维度审查清单
 - `references/best-practices.md`：核心最佳实践模式
+- `references/quick-start.md`：快速开始指南
+- `references/faq.md`：常见问题解答
+- `references/examples/`：完整示例（审查报告、修复流程、产品评审）
 - `references/extended/`：按需加载的扩展内容（修复方法、详细流程、评分标准等）
 
 ## 版本说明

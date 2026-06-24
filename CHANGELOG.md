@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.9 - 2026-06-24
+
+- 新增场景维度"生态适配性"（面向国内用户），评估语言支持、网络依赖、本地化程度
+- 新增 references/quick-start.md 快速开始指南，降低上手门槛
+- 新增 references/faq.md 常见问题解答，覆盖使用类和理解类问题
+- 新增 references/examples/ 目录，包含三个完整示例：
+  - example-review-output.md：技术审查报告示例
+  - example-fix-flow.md：修复流程示例
+  - example-product-review.md：产品评审示例
+- SKILL.md 新增"辅助资源"章节，引用新文件
+
 ## 3.0.7 - 2026-06-18
 
 - 产品评审维度框架重构：从固定 5 维度改为三层可配置框架（核心维度 + 工具类型维度 + 场景维度）
