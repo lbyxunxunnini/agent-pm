@@ -110,6 +110,19 @@ D-Step 5: 更新台账
 - `source_project_path` → 目标项目路径
 - `last_context_summary` → 上一轮的上下文摘要
 
+**恢复前必须执行完整性校验**，任意一项校验失败则放弃恢复，回退到询问模式：
+
+- [ ] `source_project_path` 指向的目录存在且可读
+- [ ] `source_review_id` 对应的 issue 记录仍存在且未被后续操作覆盖
+- [ ] `last_context_summary` 非空且包含有效的项目摘要
+- [ ] 若 `pending_action: enter_product_review` 存在，其对应的模式 D 上下文（ProductReviewSpec、维度选择）完整
+
+校验失败时的回退行为：
+```
+无法恢复上一轮的评分上下文，因为 [具体原因]。
+你可以：1) 重新指定项目路径进入评分 2) 从头开始技术审查+评分
+```
+
 ### 1c. 确定 ProductReviewSpec
 
 ```yaml
@@ -133,7 +146,17 @@ ProductReviewSpec:
 
 - 若存在有效的 `source_review_id` 且 `source_snapshot` 为 `post_fix`：读取项目当前状态（已修复后的文件）
 - 若为 `explicit_user_request`：读取项目核心文件，获取足够上下文用于评分（不需要完整技术审查级别的深度）
-- 最少读取：入口文件 + 主指令文件 + 关键 reference 文件（最多 5 个）
+- 最少读取：入口文件 + 主指令文件 + 关键 reference 文件（通常 3-5 个）
+
+**项目文件过多时的处理策略**（按优先级取，满足后停止）：
+
+1. 入口文件（SKILL.md / CLAUDE.md / package.json 等）
+2. 主指令文件（核心流程描述）
+3. 关键 reference 文件（checklist、report-templates 等），最多 3 个
+4. 若仍有重要文件未覆盖 → 在评分报告中标注"未完整读取"，列出未读文件名并说明对评分的影响
+5. 子目录中的文件仅在上述文件引用到且评估必需时才读
+
+原则：评分的上下文充分性优先于文件数量限制。宁可多读 2 个关键文件确保评分准确，也不因为硬上限而给出不完整的评分。
 
 ### 2b. 加载评分框架
 

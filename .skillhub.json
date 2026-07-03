@@ -1,5 +1,5 @@
 {
   "name": "agent-pm",
   "description": "触发方式：/agent-pm [path] [--score]。USE FOR: 审查 agent 项目、修复已确认问题、创建新 skill 前的澄清、产品评分/产品评审/打分/综合评级/三方评估。",
-  "version": "v3.0.10"
+  "version": "v3.0.11"
 }

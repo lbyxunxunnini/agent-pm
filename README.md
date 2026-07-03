@@ -2,7 +2,7 @@
 
 `agent-pm` 是一个面向 Claude Code / Codex skill、`CLAUDE.md` 指令文件和 MCP Server 项目的产品经理型审查 skill。它不做通用 code review，而是从产品、指令、工作流和收敛性角度识别 agent 项目中的高价值问题，并支持在同一闭环内完成修复与验证。
 
-当前版本：`3.0.10`
+当前版本：`3.0.11`
 
 ## 核心能力
 
@@ -43,6 +43,7 @@ agent-pm/
 ├── README.md
 ├── CHANGELOG.md
 └── references/
+    ├── anti-patterns.md
     ├── best-practices.md
     ├── checklist.md
     ├── faq.md
@@ -68,6 +69,7 @@ agent-pm/
 ## 关键文件
 
 - `SKILL.md`：主入口、模式选择、核心原则和总体约束
+- `references/anti-patterns.md`：反模式与歧义消解手册（聚合所有流程中的反例和常见误区）
 - `references/mode-a.md`：审查阶段流程
 - `references/mode-b.md`：修复与验证阶段流程
 - `references/mode-c.md`：新 skill 创建前澄清流程
