@@ -53,7 +53,7 @@ product_review_trigger:
 
 | review_id | 状态 | 触发时机 | 最近提示语 | 结果摘要 |
 |-----------|------|----------|------------|----------|
-| 当前轮次 | pending_after_tech_review / pending_after_fix / completed / skipped_by_user / not_requested_in_this_round | tech_review / fix_verification / - | "技术审查完成，要继续做产品评审吗？" / "修复验证完成，要继续做产品评审吗？" / - | 暂无 |
+| 当前轮次 | pending_after_tech_review / pending_after_fix / completed / skipped_by_user / not_requested_in_this_round | tech_review / fix_verification / explicit_user_request / - | "技术审查完成，要继续做产品评审吗？" / "修复验证完成，要继续做产品评审吗？" / - | 暂无 |
 
 ### 状态说明
 
@@ -62,6 +62,21 @@ product_review_trigger:
 - `completed`：本轮已完成多维度评分和产品评审输出
 - `skipped_by_user`：用户明确表示本轮不做产品评审
 - `not_requested_in_this_round`：本轮是纯修复或其他流程，不要求进入产品评审
+
+### 可恢复字段（跨轮次上下文传递）
+
+以下字段在每轮结束时更新，供下一轮用户说"进入评分"时恢复上下文，避免重新分类到 A/B：
+
+```yaml
+pending_action: enter_product_review  # 存在时直接进入模式 D
+source_review_id: review-xxx          # 关联的技术审查 ID
+source_project_path: /path/to/project # 目标项目路径
+last_context_summary: |               # 上一轮上下文摘要
+  项目类型：skill
+  技术审查发现 3 个 P1, 2 个 P2
+  已修复 2 个 P1，1 个 P1 用户拒绝
+  产品评审状态：pending_after_fix
+```
 
 ---
 

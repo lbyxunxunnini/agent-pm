@@ -13,6 +13,7 @@
 - max_findings: 8
 - severity_threshold: P1
 - product_review_gate: pending_after_tech_review / pending_after_fix / not_requested_in_this_round / completed / skipped_by_user
+- product_review_gate_next_action: enter_mode_d / ask_user / none
 
 ### [维度名]
 - `APM-WORKFLOW-001` **[P1 必须改]** status: open
@@ -66,19 +67,47 @@
 
 ### 产品评审交接
 - status: pending_after_fix / completed / skipped_by_user
+- next_action: enter_mode_d / ask_user / none
 - next_prompt: "修复验证完成，要继续做产品评审吗？" / "无"
 ```
 
+## ProductReviewSpec
+
+```
+### ProductReviewSpec
+- mode: product_review
+- target_project: /path/to/project
+- triggered_by: explicit_user_request / after_tech_review / after_fix_verification / ledger_resume
+- source_review_id: review-xxx  # 关联的技术审查 ID，独立触发时为 null
+- source_snapshot: current / post_fix / historical
+- unresolved_blockers_policy: score_current_state / require_fix_first
+- unresolved_issues_in_score: [列出影响评分的未修复问题] / 无
+```
+
 ## 产品评审
 
 ```
 ## 产品评审
 
-- status: completed
-- triggered_after: tech_review / fix_verification
+### ProductReviewSpec
+- mode: product_review
+- target_project: /path/to/project
+- triggered_by: explicit_user_request / after_tech_review / after_fix_verification
+- source_snapshot: current / post_fix
+- unresolved_blockers_policy: score_current_state / require_fix_first
+- unresolved_issues_in_score: [列出影响评分的未修复问题] / 无
 
 ### 价值评定
-（三层维度框架：核心维度 + 工具类型维度 + 场景维度）
+（三方评估法：支持方 + 反方 + 综合方）
+
+### 维度评分明细
+| 维度 | 评分 | 证据引用 |
+|------|------|---------|
+| [维度 1] | X/5 | 支持方#N、反方#M |
+| ... | ... | ... |
+
+### 总体评分
+X.X / 5.0（各维度评分的加权平均）
 
 ### 目标治理综合分析
 （过程控制 vs 目标治理比例、最高杠杆改进方向、改进依赖关系）
@@ -226,6 +255,7 @@
 - 项目路径：/path/to/project
 - 项目类型：skill / CLAUDE.md / MCP server
 - 产品评审状态：pending_after_tech_review / pending_after_fix / completed / skipped_by_user / not_requested_in_this_round
+- 产品评审交接动作：enter_mode_d / ask_user / none
 
 ## 技术审查
 （按维度组织，同对话报告格式，包含 ReviewSpec、issue_id、severity、status、acceptance_criteria）

@@ -6,12 +6,13 @@
 
 一个 AI 产品经理型审查工具，帮你检查 Claude Code agent 项目的设计质量。不是代码审查员，是产品经理视角——关注"写的人以为说清楚了但其实没有"的问题。
 
-## 三种用法
+## 四种用法
 
 | 用法 | 触发方式 | 说明 |
 |------|---------|------|
 | 审查项目 | `/agent-pm /path/to/project` | 扫描项目，输出问题报告 |
 | 修复问题 | 审查后选择"修复" | 自动修复已确认的问题 |
+| 产品评分 | `/agent-pm /path/to/project --score` 或 `产品评分` | 独立进入产品评审，做三方评估和多维度打分 |
 | 创建新 Skill | `/agent-pm --new` | 澄清需求，生成方案 |
 
 ## 审查流程一览
@@ -61,9 +62,11 @@
 |------|---------|
 | 刚写完一个 Skill，想检查质量 | `/agent-pm` 直接审查 |
 | 审查出了问题，想自动修复 | 审查后选择"修复" |
+| 只想评分，不审查 | `/agent-pm --score` 或说"产品评分" |
 | 想创建一个新 Skill | `/agent-pm --new`，先做需求澄清 |
 | 想了解评分标准 | 读 `rubric-scoring.md` |
 | 想看完整审查流程 | 读 `mode-a.md` |
+| 想看评分流程 | 读 `mode-d.md` |
 
 ## 文件导航
 
@@ -76,6 +79,7 @@
 | `references/mode-a.md` | 技术审查流程 | 想了解审查细节 |
 | `references/mode-b.md` | 修复验证流程 | 想了解修复细节 |
 | `references/mode-c.md` | 新 Skill 创建流程 | 想创建新 Skill |
+| `references/mode-d.md` | 产品评审流程 | 想做或了解产品评分 |
 | `references/report-templates.md` | 报告模板 | 想了解输出格式 |
 | `references/extended/rubric-scoring.md` | 评分标准 | 想了解评分细节 |
 | `references/examples/` | 完整示例 | 想看实际案例 |

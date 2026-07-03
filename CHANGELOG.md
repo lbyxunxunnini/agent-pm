@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.10 - 2026-07-03
+
+- **产品评分升级为一等模式**：新增模式 D（`references/mode-d.md`），产品评审/评分不再仅是审查或修复后的附属阶段，用户可直接说"产品评分""打分""--score"独立进入
+- **意图优先级**：SKILL.md 新增意图优先级规则——产品评分 > 创建新 skill > 修复 > 审查，支持组合意图（A→D、B→D、A→B→D）
+- **模式 A/B 重构产品评审交接**：mode-a.md 阶段二和 mode-b.md B-Step 7 从内联产品评审改为显式交接到模式 D，避免"修复后进不去评分""用户主动要求评分被上层流程挡住"
+- **report-templates.md 新增 ProductReviewSpec**：独立评分规格，包含 `triggered_by`、`source_snapshot`、`unresolved_blockers_policy` 等字段
+- **report-templates.md 产品评审报告增强**：增加维度评分明细表、总体评分、ProductReviewSpec 输出
+- **issue-ledger.md 新增可恢复字段**：`pending_action`、`source_review_id`、`source_project_path`、`last_context_summary`，支持跨轮次上下文恢复，用户说"进入评分"时不再重新分类到 A/B
+- **用户文档更新**：README.md、quick-start.md（三种→四种用法）、faq.md（新增"如何只做产品评分"）
+- **歧义消解反例体系**：SKILL.md 新增 6 条歧义消解规则——顺序连接词优先于关键词匹配、"打分"在非产品评审上下文不触发、无目标项目不触发、历史查询≠新评分、"是，但是…"不截断、模糊表述不进 D。mode-d.md 不触发情况从 3 条扩展到 6 类 20+ 条反例
+
 ## 3.0.9 - 2026-06-24
 
 - 新增场景维度"生态适配性"（面向国内用户），评估语言支持、网络依赖、本地化程度
