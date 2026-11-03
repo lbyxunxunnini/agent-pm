@@ -21,7 +21,7 @@ version="$(tr -d '[:space:]' < VERSION)"
 # 2. 读取 .skillhub.json
 if [[ -f .skillhub.json ]]; then
   skillhub_version="$(python3 -c 'import json,sys; print(json.load(open(".skillhub.json",encoding="utf-8"))["version"])')"
-  [[ "$version" == "$skillhub_version" ]] || fail "VERSION ($version) != .skillhub.json ($skillhub_version)"
+  [[ "${version#v}" == "${skillhub_version#v}" ]] || fail "VERSION ($version) != .skillhub.json ($skillhub_version)"
 else
   warn ".skillhub.json not found, skipping check"
 fi
@@ -31,14 +31,14 @@ if [[ -f README.md ]]; then
   readme_versions="$(python3 -c '
 import re, sys
 text = open("README.md", encoding="utf-8").read()
-matches = re.findall(r"(?:当前版本|Version)[：:]\s*\*{0,2}(v?[\d][\w.\-]*)\*{0,2}", text)
+matches = re.findall(r"(?:当前版本|Version)[：:]\s*[`*]*(v?[\d][\w.\-]*)[`*]*", text)
 for m in matches:
     print(m)
 ')"
   if [[ -n "$readme_versions" ]]; then
     while IFS= read -r readme_version; do
       readme_version="$(echo "$readme_version" | tr -d '[:space:]')"
-      [[ "$version" == "$readme_version" ]] || fail "VERSION ($version) != README ($readme_version)"
+      [[ "${version#v}" == "${readme_version#v}" ]] || fail "VERSION ($version) != README ($readme_version)"
     done <<< "$readme_versions"
   else
     warn "README.md has no version marker"
