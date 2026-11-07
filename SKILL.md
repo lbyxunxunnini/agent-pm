@@ -48,10 +48,11 @@ NO ISSUE REPORT WITHOUT EXECUTION VERIFICATION FIRST
 agent-pm 的目标不是无限发现新问题，而是让一轮审查-修复闭环**可复现、可验证、可结束**。
 
 - 同一轮审查开始时必须固定 `ReviewSpec`，后续修复和验证不得临时扩大审查范围
-- 完整审查只在"发现模式"运行；修复后进入"验证模式"，只验证已确认问题和本次修复直接引入的 P0/P1 回归
+- 完整审查只在"发现模式"运行；修复后进入"验证模式"，验证已确认问题和直接回归，并按需检查受影响的重要能力；仅直接 P0/P1 回归默认阻塞
 - 默认只阻塞 P0/P1 问题；P2/P3 进入 backlog，除非用户明确要求一起处理
 - 默认每轮最多输出 8 个问题，优先输出 P0/P1，禁止为了覆盖维度而凑低价值问题
 - 当所有 accepted 的 P0/P1 问题验证通过，且没有本次修复直接引入的新 P0/P1 回归时，本轮必须结束
+- 验收受阻或尚未执行时不得标为 fixed；说明未验证内容和阻断原因，等待必要条件或用户决策，不反复修复或声称闭环完成
 
 ### 严重程度定义
 
@@ -71,7 +72,7 @@ agent-pm 的目标不是无限发现新问题，而是让一轮审查-修复闭�
 - 用户确认修复的问题标记为 `accepted`
 - 用户拒绝的问题标记为 `rejected`，下一轮不得重复报告，除非有新的证据证明它升级为 P0/P1
 - P2/P3 默认标记为 `deferred`，放入 backlog
-- 修复前必须写出 `acceptance_criteria`，修复后只能按这些验收条件验证
+- 修复前必须写出 `acceptance_criteria`；修复后按这些条件验证已确认问题，并按验证模式检查直接回归及受影响的重要能力
 
 ### 审查范围
 
@@ -215,11 +216,13 @@ digraph mode_select {
 
 ## 进化机制（核心差异化，但必须隔离）
 
-进化机制仅在已有跨项目证据且用户授权时持久写入；否则只在对话中提出候选。不得因审查其他项目自动修改 skill 安装目录。
+agent-pm 自身的跨项目进化仅在已有跨项目证据且用户授权时持久写入；否则只在对话中提出候选。不得因审查其他项目自动修改 skill 安装目录。
+
+区分当前任务纠错、被审项目自身的长期改进和 agent-pm 的跨项目进化：前两者按目标项目的实际需要、授权和规则处理，不套用下方跨项目准入条件。反馈可按问题适配为案例、自动检查、工具修复或指令；单次要求不自动升级为通用规则，也不默认持久保存反馈。
 
 ### 问题模式进化
 1. 回顾本次发现的问题，检查是否有同一问题在 2 个及以上不同项目中出现过
-2. 若有，先提炼为候选规则，记录到 [issue-ledger.md](references/issue-ledger.md) 的"候选规则"部分
+2. 若有，先在对话或已授权的记录中提炼候选规则，可参考 [issue-ledger.md](references/issue-ledger.md) 的"候选规则"格式
 3. 候选规则转为正式规则必须同时满足：
    - 至少 2 个不同项目出现过
    - 每个项目都有明确 issue_id、证据位置和修复结果
@@ -249,6 +252,7 @@ digraph mode_select {
 | [references/anti-patterns.md](references/anti-patterns.md) | 反模式与歧义消解手册（聚合所有流程中的反例和常见误区） |
 | [references/mode-d.md](references/mode-d.md) | 产品评审/评分流程 |
 | [references/examples/](references/examples/) | 完整示例（审查报告、修复流程、产品评审） |
+| [references/examples/example-feedback-improvement.md](references/examples/example-feedback-improvement.md) | 反馈、改进落点与验收证据示例 |
 
 ---
 
